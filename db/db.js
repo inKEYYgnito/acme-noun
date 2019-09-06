@@ -22,7 +22,21 @@ const Thing = conn.define('thing', validator)
 
 const setup = async () => {
     await conn.sync({ force: true }) // only done on dev!
+    Person.create({name:'Kristina'})
+    Person.create({name:'Katsu'})
+    Person.create({name:'Maria'})
+    Place.create({name:'NYC'})
+    Place.create({name:'LA'})
+    Place.create({name:'Boston'})
+    Thing.create({name:'Pen'})
+    Thing.create({name:'Paper'})
+    Thing.create({name:'Chalk'})
 }
+Person.belongsTo(Place)
+Place.hasMany(Person)
+Thing.belongsTo(Person)
+Person.hasMany(Thing)
+//Person.hasOne(Place)
 
 module.exports = {
     setup,
