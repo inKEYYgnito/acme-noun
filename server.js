@@ -2,15 +2,19 @@ const express = require('express')
 const app = express()
 const path = require('path')
 const db = require('./db/db')
-const { Person, Place, Thing } = db.models
 
 const logger = (req, res, next) => {
     console.log(`Received ${req.method} request on ${req.url}`)
     next()
 }
-
 app.use(logger)
 
+/* routes */
+app.use('/api/people', require('./api/people'))
+app.use('/api/places', require('./api/places'))
+app.use('/api/things', require('./api/things'))
+
+/* serve UI */
 app.get('/', (req, res, next) => {
     try {
         res.sendFile(path.join(__dirname, 'index.html'))
@@ -19,30 +23,7 @@ app.get('/', (req, res, next) => {
     }
 })
 
-app.get('/api/people', async (req, res, next) => {
-    try {
-        res.send(await Person.findAll())
-    } catch (e) {
-        next(e)
-    }
-})
-
-app.get('/api/places', async (req, res, next) => {
-    try {
-        res.send(await Place.findAll())
-    } catch (e) {
-        next(e)
-    }
-})
-
-app.get('/api/things', async (req, res, next) => {
-    try {
-        res.send(await Thing.findAll())
-    } catch (e) {
-        next(e)
-    }
-})
-
+/* initiate db connection */
 db.setup()
     .then(() => {
         const port = process.env.PORT || 3000
